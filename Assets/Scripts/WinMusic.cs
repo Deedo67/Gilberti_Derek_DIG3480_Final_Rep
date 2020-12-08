@@ -15,11 +15,11 @@ public class WinMusic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (RobotCounter.scoreValue >= 5)
+        if (RobotCounter.scoreValue >= 9)
         {
             winMusic.mute = false;
         }
-        if (RobotCounter.scoreValue <= 4)
+        if (RobotCounter.scoreValue <= 8)
         {
             winMusic.mute = true;
         }

@@ -15,11 +15,11 @@ public class WinScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (RobotCounter.scoreValue >= 5)
+        if (RobotCounter.scoreValue >= 9)
         {
             winText.text = "You Win! Game Made by Derek Gilberti! Press R to Restart.";
         }
-        if (RobotCounter.scoreValue <= 4)
+        if (RobotCounter.scoreValue <= 8)
         {
             winText.text = "";
         }

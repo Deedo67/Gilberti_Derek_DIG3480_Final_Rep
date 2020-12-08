@@ -17,7 +17,7 @@ public class BaseMusic : MonoBehaviour
     {
         backgroundMusic.mute = false;
 
-        if (RobotCounter.scoreValue >= 5)
+        if (RobotCounter.scoreValue >= 9)
         {
             backgroundMusic.mute = true;
         }

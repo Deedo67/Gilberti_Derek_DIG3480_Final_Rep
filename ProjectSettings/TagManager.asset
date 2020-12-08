@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - lose
+  - Speed
+  - SpeedBoost
+  - Trap
   layers:
   - Default
   - TransparentFX

@@ -5,8 +5,10 @@ using UnityEngine.SceneManagement;
 public class RubyController : MonoBehaviour
 {
     // ========= MOVEMENT =================
-    public float speed = 4;
-    
+    public float speed;
+    public float boostTimer;
+    public bool boosting;
+
     // ======== HEALTH ==========
     public int maxHealth = 5;
     public float timeInvincible = 2.0f;
@@ -28,6 +30,7 @@ public class RubyController : MonoBehaviour
     public AudioClip hitSound;
     public AudioClip shootingSound;
     public AudioClip collectibleSound;
+    public AudioClip speedSound;
     public bool mute;
 
     // ======== HEALTH ==========
@@ -56,6 +59,9 @@ public class RubyController : MonoBehaviour
     {
         // =========== MOVEMENT ==============
         rigidbody2d = GetComponent<Rigidbody2D>();
+        speed = 4;
+        boostTimer = 0;
+        boosting = false;
                 
         // ======== HEALTH ==========
         invincibleTimer = -1.0f;
@@ -67,6 +73,7 @@ public class RubyController : MonoBehaviour
         
         // ==== AUDIO =====
         audioSource = GetComponent<AudioSource>();
+
     }
 
     void Update()
@@ -89,7 +96,7 @@ public class RubyController : MonoBehaviour
             }
         }
 
-        if (RobotCounter.scoreValue >= 5)
+        if (RobotCounter.scoreValue >= 6)
         {
             if (Input.GetKey(KeyCode.R))
             {
@@ -103,14 +110,30 @@ public class RubyController : MonoBehaviour
                 
         Vector2 move = new Vector2(horizontal, vertical);
         
-        if(!Mathf.Approximately(move.x, 0.0f) || !Mathf.Approximately(move.y, 0.0f))
+        if((!Mathf.Approximately(move.x, 0.0f) || !Mathf.Approximately(move.y, 0.0f)) && speed != 0)
         {
             lookDirection.Set(move.x, move.y);
             lookDirection.Normalize();
         }
 
-        currentInput = move;
 
+
+        currentInput = move;
+        #region Movement Speed    
+        // ============== Movement and Speed =============
+        if (boosting)
+        {
+            boostTimer += Time.deltaTime;
+            if(boostTimer >= 3)
+            {
+                speed = 4;
+                boostTimer = 0;
+                boosting = false;
+                animator.enabled = true;
+            }
+
+        }
+        #endregion
 
         // ============== ANIMATION =======================
 
@@ -140,6 +163,11 @@ public class RubyController : MonoBehaviour
                 {
                     character.DisplayDialog();
                 }  
+
+                if (RobotCounter.scoreValue == 5)
+                {
+                    SceneManager.LoadScene("Stage2");
+                }
             }
         }
 
@@ -148,6 +176,23 @@ public class RubyController : MonoBehaviour
         {
             Application.Quit();
             Debug.Log("Game has Quit");
+        }
+    }
+
+    //======== SpeedBoost/Trap =========
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "SpeedBoost")
+        {
+            boosting = true;
+            speed = 6;
+            Destroy(other.gameObject);
+        }
+        if (other.tag == "Trap")
+        {
+            boosting = true;
+            speed = 0;
+            animator.enabled = false;
         }
     }
 
@@ -210,7 +255,7 @@ public class RubyController : MonoBehaviour
         transform.position = respawnPosition.position;
         speed = 4.0f;
         RobotCounter.scoreValue = 0;
-        SceneManager.LoadScene("ExampleScene");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     
     // =============== PROJECTICLE ========================
